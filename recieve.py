@@ -1,6 +1,8 @@
-from generate_keys import keys_generator
+from keys import *
+from decrypt import decrypt
 
-public_key, private_key = keys_generator()
-message = list(input())
-ascii_message = list(map(ord, message))
-
+private_key = list(map(int, input('key').split(' ')))
+encoded_message = list(map(int, input().split(' ')))
+ascii_message = decrypt(private_key, encoded_message)
+message = list(map(chr, ascii_message))
+print(''.join(message))
