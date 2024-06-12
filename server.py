@@ -18,15 +18,15 @@ except:
 
 server.listen(5)
 
+client, address = server.accept()
+print(f"user connected on address: {address[0]}:{address[1]}")
+client.send(bytes(' '.join(list(map(str,public_key))), 'utf-8'))
+client_public_key = client.recv(124).decode()
+client_public_key = list(map(int, client_public_key.split(' ')))
+print(client_public_key)
 while True:
-    client, address = server.accept()
-    print(f"user connected on address: {address[0]}:{address[1]}")
-    client.send(bytes(' '.join(list(map(str,public_key))), 'utf-8'))
-    client_public_key = client.recv(124).decode()
-    client_public_key = list(map(int, client_public_key.split(' ')))
-    print(client_public_key)
-    message = list(map(int, client.recv(124).decode().split(' ')))
-    print(decrypt(private_key, message))
+    message = list(map(int, client.recv(256).decode().split(' ')))
+    print(f'{client.getpeername()[0]}:{client.getpeername()[1]} -', decrypt(private_key, message))
     message = input()
     message = encrypt(client_public_key, message)
     client.send(bytes(message, "utf-8"))

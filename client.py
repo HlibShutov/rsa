@@ -15,14 +15,14 @@ try:
 except:
     print('error while connecting to server')
 
+message = client.recv(124)
+public_server_key = message.decode()
+public_server_key = list(map(int, public_server_key.split(' ')))
+print(public_server_key)
+client.send(bytes(' '.join(list(map(str, public_key))), 'utf-8'))
 while True:
-    message = client.recv(124)
-    public_server_key = message.decode()
-    public_server_key = list(map(int, public_server_key.split(' ')))
-    print(public_server_key)
-    client.send(bytes(' '.join(list(map(str, public_key))), 'utf-8'))
     message = input()
     message = encrypt(public_server_key, message)
     client.send(bytes(message, "utf-8"))
-    message = list(map(int, client.recv(124).decode().split(' ')))
-    print(decrypt(private_key, message))
+    message = list(map(int, client.recv(256).decode().split(' ')))
+    print(f'{client.getpeername()[0]}:{client.getpeername()[1]} -', decrypt(private_key, message))
